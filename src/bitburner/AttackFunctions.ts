@@ -1,8 +1,8 @@
 import { NS } from "NetScriptDefinitions";
 // import { reportHack, reportGrow, reportWeaken } from "./MetricsPublisher";
 
-export async function doHack(ns: NS, globalConfig: GlobalConfig, scriptTargets, threads: number) {
-    const list = scriptTargets["hack"];
+export async function doHack(ns: NS, globalConfig: GlobalConfig, scriptTargets: Targets, threads: number) {
+    const list = scriptTargets.Hack;
     const hackTarget = list[getRandomInt(list.length)];
     // const start = Date.now();
     await ns.hack(hackTarget, { threads: threads });
@@ -12,8 +12,8 @@ export async function doHack(ns: NS, globalConfig: GlobalConfig, scriptTargets, 
 }
 
 
-export async function doGrow(ns: NS, globalConfig: GlobalConfig, scriptTargets, threads: number) {
-    const list = scriptTargets["grow"];
+export async function doGrow(ns: NS, globalConfig: GlobalConfig, scriptTargets: Targets, threads: number) {
+    const list = scriptTargets.Grow;
     const hackTarget = list[getRandomInt(list.length)];
     // const start = Date.now();
     await ns.grow(hackTarget, { threads: threads });
@@ -22,8 +22,8 @@ export async function doGrow(ns: NS, globalConfig: GlobalConfig, scriptTargets, 
     // reportGrow(ns, globalConfig["metrics"], hackTarget, multiplier, duration)
 }
 
-export async function doWeaken(ns: NS, globalConfig: GlobalConfig, scriptTargets, threads: number) {
-    const list = scriptTargets["weaken"];
+export async function doWeaken(ns: NS, globalConfig: GlobalConfig, scriptTargets: Targets, threads: number) {
+    const list = scriptTargets.Weaken;
     const hackTarget = list[getRandomInt(list.length)];
     // const start = Date.now();
     await ns.weaken(hackTarget, { threads: threads });

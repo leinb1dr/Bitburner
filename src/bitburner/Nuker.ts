@@ -10,7 +10,7 @@ export async function main(ns: NS) {
 
 		x++;
 		if (x > 30) {
-			ns.exec("configServer.js", "home");
+			ns.exec("ConfigUpdater.js", "home");
 			x = 0;
 		}
 		const target = ns.peek(2) as string;
@@ -20,7 +20,7 @@ export async function main(ns: NS) {
 			const config = JSON.parse(target) as Configuration;
 			const driverConfig = config.driver;
 			const globalConfig = config.global;
-			
+
 			if (hackable) {
 				hackable = false;
 

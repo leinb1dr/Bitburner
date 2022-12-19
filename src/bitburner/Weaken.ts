@@ -12,13 +12,13 @@ export async function main(ns: NS) {
 		if (config == "NULL PORT DATA" || config.length == 0 || target == "NULL PORT DATA" || target == "none" || target.length == 0) {
 			await ns.sleep(1000);
 		} else {
-			const scriptTargets = JSON.parse(target);
-			const globalConfig = JSON.parse(config)["global"];
-			if (scriptTargets["weaken"].length > 0) {
+			const scriptTargets = JSON.parse(target) as Targets;
+			const globalConfig = JSON.parse(config)["global"] as GlobalConfig;
+			if (scriptTargets.Weaken.length > 0) {
 				await doWeaken(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["hack"].length > scriptTargets["grow"].length) {
+			} else if (scriptTargets.Hack.length > scriptTargets.Grow.length) {
 				await doHack(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["grow"].length > 0) {
+			} else if (scriptTargets.Grow.length > 0) {
 				await doGrow(ns, globalConfig, scriptTargets, threads);
 			}
 		}

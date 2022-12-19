@@ -40,9 +40,9 @@ export async function main(ns: NS) {
             }
 
             const fleet: Targets = {
-                hack:[],
-                grow:[],
-                weaken:[]
+                Hack:[],
+                Grow:[],
+                Weaken:[]
             };
             // Remove self from managing
             seen.delete("home");
@@ -97,9 +97,9 @@ export async function main(ns: NS) {
             }
 
             ns.print("\nworkers:");
-			ns.print(`\thack(${fleet.hack.length}): ${fleet.hack}`);
-			ns.print(`\tgrow(${fleet.grow.length}): ${fleet.grow}`);
-			ns.print(`\tweaken(${fleet.weaken.length}): ${fleet.weaken}`);
+			ns.print(`\thack(${fleet.Hack.length}): ${fleet.Hack}`);
+			ns.print(`\tgrow(${fleet.Grow.length}): ${fleet.Grow}`);
+			ns.print(`\tweaken(${fleet.Weaken.length}): ${fleet.Weaken}`);
 
             // Don't loop on forced update
             if (update) return;

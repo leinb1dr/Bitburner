@@ -15,9 +15,9 @@ export async function main(ns:NS) {
 
 			// initialize servers
 			const targets: Targets = {
-				hack: [],
-				grow: [],
-				weaken: []
+				Hack: [],
+				Grow: [],
+				Weaken: []
 			};
 
 			// server crawl stack
@@ -59,9 +59,9 @@ export async function main(ns:NS) {
 			// Update ports
 			updatePorts(ns, JSON.stringify(targets), fcConfig["port"] || globalConfig["port"]);
 			ns.print("\ntargets:");
-			ns.print(`\thack(${targets.hack.length}): ${targets.hack}`);
-			ns.print(`\tgrow(${targets.grow.length}): ${targets.grow}`);
-			ns.print(`\tweaken(${targets.weaken.length}): ${targets.weaken}`);
+			ns.print(`\thack(${targets.Hack.length}): ${targets.Hack}`);
+			ns.print(`\tgrow(${targets.Grow.length}): ${targets.Grow}`);
+			ns.print(`\tweaken(${targets.Weaken.length}): ${targets.Weaken}`);
 			await ns.sleep(fcConfig["sleepTime"] || globalConfig["sleepTime"]);
 		}
 	}
@@ -89,15 +89,15 @@ function categorize(ns: NS, cur: string, targets: Targets, config: FleetControll
 
 		if (maxMoney > 0) {
 			if (curMoney > minMoney && curSecurity < maxSecurity) {
-				targets.hack.push(cur);
+				targets.Hack.push(cur);
 			}
 
 			if (curMoney < maxMoney && curSecurity < maxSecurity) {
-				targets.grow.push(cur);
+				targets.Grow.push(cur);
 			}
 
 			if (curSecurity > minSecurity) {
-				targets.weaken.push(cur);
+				targets.Weaken.push(cur);
 
 			}
 		}

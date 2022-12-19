@@ -14,13 +14,13 @@ export async function main(ns: NS) {
 		} else {
 			const scriptTargets = JSON.parse(target);
 			const globalConfig = JSON.parse(config)["global"];
-			if (scriptTargets["grow"].length > 0) {
+			if (scriptTargets.Grow.length > 0) {
 				await doGrow(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["hack"].length > scriptTargets["weaken"].length) {
+			} else if (scriptTargets.Hack.length > scriptTargets.Weaken.length) {
 				await doHack(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["weaken"].length > 0) {
+			} else if (scriptTargets.Weaken.length > 0) {
 				await doWeaken(ns, globalConfig, scriptTargets, threads);
-			}
+			}	
 		}
 		await ns.sleep(50);
 	}

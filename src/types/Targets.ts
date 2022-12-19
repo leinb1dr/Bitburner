@@ -1,5 +1,5 @@
 type Targets = {
-    hack: string[],
-    grow: string[],
-    weaken: string[]
+    Hack: string[],
+    Grow: string[],
+    Weaken: string[]
 }

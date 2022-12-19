@@ -16,11 +16,11 @@ export async function main(ns: NS) {
 		} else {
 			const scriptTargets = JSON.parse(target);
 			const globalConfig = JSON.parse(config)["global"];
-			if (scriptTargets["hack"].length > 0 && scriptTargets["hack"].length * 2 >= idx) {
+			if (scriptTargets.Hack.length > 0 && scriptTargets.Hack.length * 2 >= idx) {
 				await doHack(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["grow"].length > scriptTargets["weaken"].length) {
+			} else if (scriptTargets.Grow.length > scriptTargets.Weaken.length) {
 				await doGrow(ns, globalConfig, scriptTargets, threads);
-			} else if (scriptTargets["weaken"].length > 0) {
+			} else if (scriptTargets.Weaken.length > 0) {
 				await doWeaken(ns, globalConfig, scriptTargets, threads);
 			}
 		}

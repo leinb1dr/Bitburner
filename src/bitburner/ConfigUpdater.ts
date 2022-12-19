@@ -3,12 +3,7 @@ import { NS } from "NetScriptDefinitions";
 /** @param {NS} ns */
 export async function main(ns: NS){
     ns.clearPort(2);
-    ns.writePort(2, JSON.stringify(createConfig));
-
-}
-
-function createConfig(): Configuration{
-    return {
+    ns.writePort(2, JSON.stringify({
         global: {
             port: 1,
             sleepTime: 1000,
@@ -16,7 +11,7 @@ function createConfig(): Configuration{
             metricsStorage: 4
         },
         driver: {
-            portScripts: 3
+            portScripts: 5
         },
         fleetController: {
             minSecurityOffset: 1,
@@ -28,10 +23,11 @@ function createConfig(): Configuration{
             sleepTime: 1000
         },
         fleetWatchdog: {
-            defaultScript: "weaken",
-            scripts: ["weaken", "grow", "hack"],
-            ratios: [1, 2, 7],
-            dependencies: ["metricsReporter.js", "attackFunctions.js"]
+            defaultScript: "Weaken",
+            scripts: ["Weaken", "Grow", "Hack"],
+            ratios: [1, 2, 5],
+            dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
         }
-    };
+    } as Configuration));
+
 }
