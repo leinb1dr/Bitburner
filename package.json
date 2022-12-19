@@ -1,0 +1,23 @@
+{
+    "name": "bitburner",
+    "version": "0.1.0",
+    "description": "My scripts for playing the game bitburner",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/TypeScript-Node-Starter"
+    },
+    "author": "Daniel Leinbach",
+    "license": "MIT",
+    "scripts": {
+        "build-ts": "tsc",
+        "build": "npm run build-ts && npm run lint",
+        "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.46.1",
+        "eslint": "7.19.0"
+    }
+}
