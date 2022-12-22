@@ -26,9 +26,18 @@ type FleetWatchdogConfig = {
     dependencies: string[]
 }
 
+type HackNetConfig = {
+    ramUpgrade: number,
+    levelUpgrade: number,
+    cpuUpgrade: number,
+    fleetSize: number,
+    sleepTime: number
+}
+
 type Configuration = {
     global: GlobalConfig,
     driver: DriverConfig,
     fleetController: FleetControllerConfig,
-    fleetWatchdog: FleetWatchdogConfig
+    fleetWatchdog: FleetWatchdogConfig,
+    hackNet: HackNetConfig
 }

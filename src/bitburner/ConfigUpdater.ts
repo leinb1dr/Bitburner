@@ -1,7 +1,13 @@
 import { NS } from "NetScriptDefinitions";
 
+const hackingFiles = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
+
 /** @param {NS} ns */
 export async function main(ns: NS){
+
+    const executables = ns.ls("home");
+    ns.print(executables);
+
     ns.clearPort(2);
     ns.writePort(2, JSON.stringify({
         global: {
@@ -11,7 +17,7 @@ export async function main(ns: NS){
             metricsStorage: 4
         },
         driver: {
-            portScripts: 5
+            portScripts: executables.filter(x=>hackingFiles.includes(x)).length
         },
         fleetController: {
             minSecurityOffset: 1,
@@ -27,6 +33,13 @@ export async function main(ns: NS){
             scripts: ["Weaken", "Grow", "Hack"],
             ratios: [1, 2, 5],
             dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
+        },
+        hackNet: {
+            cpuUpgrade: 1,
+            ramUpgrade: 1,
+            levelUpgrade: 2,
+            fleetSize: 30,
+            sleepTime: 100
         }
     } as Configuration));
 
