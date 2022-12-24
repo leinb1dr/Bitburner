@@ -13,6 +13,7 @@ async function waitForMoney(ns: NS, cost: number) {
 export async function main(ns: NS) {
     ns.disableLog("sleep");
     ns.disableLog("getServerMoneyAvailable");
+    ns.disableLog("getServerMaxRam");
 
     while (ns.getPurchasedServers().length < 25) {
         const cost = ns.getPurchasedServerCost(2);
@@ -25,7 +26,7 @@ export async function main(ns: NS) {
         for (let j = 0; j < ns.getPurchasedServers().length; j++) {
             if (ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
                 const cost = ns.getPurchasedServerUpgradeCost(`home-${j}`, ramUpgrade);
-                ns.print(`Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${cost}`);
+                ns.print(`Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost/1_000_000).toFixed(2)}M`);
                 await waitForMoney(ns, cost);
                 const success = ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
                 ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
