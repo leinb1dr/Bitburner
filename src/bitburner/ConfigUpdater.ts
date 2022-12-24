@@ -21,8 +21,8 @@ export async function main(ns: NS){
         },
         fleetController: {
             minSecurityOffset: 1,
-            maxSecurityOffset: 5,
-            minMoneyPercentage: 0.4,
+            maxSecurityOffset: 2,
+            minMoneyPercentage: 0.9,
             maxMoneyPercentage: 1,
             personalPrefixes: ["home"],
             unhackable: ["johnson-ortho", "crush-fitness"],
