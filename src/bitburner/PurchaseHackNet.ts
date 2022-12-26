@@ -27,35 +27,52 @@ export async function main(ns: NS) {
     const config = JSON.parse(target) as Configuration;
     const hackNetConfig = config.hackNet;
     const globalConfig = config.global;
-
-    while (hacknet.numNodes() < hackNetConfig.fleetSize) {
+    let fullyUpgradedRam = false, fullyUpgradedLevel = false, fullyUpgradedCPU = false, fullyPurchaseFleet = false;
+    while (!fullyPurchaseFleet || !fullyUpgradedRam || !fullyUpgradedLevel || !fullyUpgradedCPU) {
+        fullyUpgradedRam = true, fullyUpgradedLevel = true, fullyUpgradedCPU = true, fullyPurchaseFleet = true;
 
         for (let i = 0; i < hacknet.numNodes(); i++) {
-            while (hacknet.getNodeStats(i).level < 200 && myMoney(ns) > hacknet.getLevelUpgradeCost(i, hackNetConfig.levelUpgrade)) {
+
+            if (hacknet.getNodeStats(i).level < 200) fullyUpgradedLevel = false;
+
+            if (hacknet.getNodeStats(i).level < 200 && myMoney(ns) > hacknet.getLevelUpgradeCost(i, hackNetConfig.levelUpgrade)) {
                 hacknet.upgradeLevel(i, hackNetConfig.levelUpgrade);
-                await ns.sleep(10);
             }
         }
 
+        ns.print(`Hack Nodes Max Level: ${fullyUpgradedLevel}`);
+
         for (let i = 0; i < hacknet.numNodes(); i++) {
-            while (hacknet.getNodeStats(i).ram < 64 && myMoney(ns) > hacknet.getRamUpgradeCost(i, hackNetConfig.ramUpgrade)) {
+            if (hacknet.getNodeStats(i).ram < 64) fullyUpgradedRam = false;
+
+            if (hacknet.getNodeStats(i).ram < 64 && myMoney(ns) > hacknet.getRamUpgradeCost(i, hackNetConfig.ramUpgrade)) {
                 hacknet.upgradeRam(i, hackNetConfig.ramUpgrade);
-                await ns.sleep(10);
             }
         }
+
+        ns.print(`Hack Nodes Max Ram: ${fullyUpgradedRam}`);
+
 
         for (let i = 0; i < hacknet.numNodes(); i++) {
-            while (hacknet.getNodeStats(i).cores < 16 && myMoney(ns) > hacknet.getCoreUpgradeCost(i, hackNetConfig.cpuUpgrade)) {
+            if (hacknet.getNodeStats(i).cores < 16) fullyUpgradedCPU = false;
+
+            if (hacknet.getNodeStats(i).cores < 16 && myMoney(ns) > hacknet.getCoreUpgradeCost(i, hackNetConfig.cpuUpgrade)) {
                 hacknet.upgradeCore(i, hackNetConfig.cpuUpgrade);
-                await ns.sleep(10);
             }
         }
 
-        const cost = hacknet.getPurchaseNodeCost();
-        if (myMoney(ns) > cost) {
-            const res = hacknet.purchaseNode();
-            ns.print("Purchased hacknet Node with index " + res);
+        ns.print(`Hack Nodes Max CPU: ${fullyUpgradedCPU}`);
+
+        if (hacknet.numNodes() < hackNetConfig.fleetSize) {
+            fullyPurchaseFleet = false;
+            const cost = hacknet.getPurchaseNodeCost();
+            if (myMoney(ns) > cost) {
+                const res = hacknet.purchaseNode();
+                ns.print("Purchased hacknet Node with index " + res);
+            }
         }
+
+        ns.print(`Hack Nodes Fleet Maxed: ${fullyPurchaseFleet}`);
 
         await ns.sleep(hackNetConfig["sleepTime"] || globalConfig["sleepTime"]);
     }

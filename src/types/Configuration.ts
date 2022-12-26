@@ -34,10 +34,17 @@ type HackNetConfig = {
     sleepTime: number
 }
 
+type GangConfig = {
+    tasks: string[],
+    sleepTime: number,
+    upgradeMulti: number
+}
+
 type Configuration = {
     global: GlobalConfig,
     driver: DriverConfig,
     fleetController: FleetControllerConfig,
     fleetWatchdog: FleetWatchdogConfig,
-    hackNet: HackNetConfig
+    hackNet: HackNetConfig,
+    gangs: GangConfig
 }

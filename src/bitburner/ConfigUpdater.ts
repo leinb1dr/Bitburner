@@ -21,8 +21,8 @@ export async function main(ns: NS){
         },
         fleetController: {
             minSecurityOffset: 1,
-            maxSecurityOffset: 2,
-            minMoneyPercentage: 0.9,
+            maxSecurityOffset: 4,
+            minMoneyPercentage: 0.6,
             maxMoneyPercentage: 1,
             personalPrefixes: ["home"],
             unhackable: ["johnson-ortho", "crush-fitness"],
@@ -40,6 +40,10 @@ export async function main(ns: NS){
             levelUpgrade: 2,
             fleetSize: 30,
             sleepTime: 100
+        },
+        gangs: {
+            tasks:["Money Laundering", "Money Laundering", "Cyberterrorism"],
+            upgradeMulti: 2
         }
     } as Configuration));
 
