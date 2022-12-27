@@ -2,7 +2,7 @@ import { NS } from "NetScriptDefinitions";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-	ns.disableLog("ALL");
+    ns.disableLog("ALL");
 
     const update = ns.args[0] === "update";
     ns.print(`argument = ${ns.args[0]} parsed as ${update}`);
@@ -40,12 +40,14 @@ export async function main(ns: NS) {
             }
 
             const fleet: Targets = {
-                Hack:[],
-                Grow:[],
-                Weaken:[]
+                Hack: [],
+                Grow: [],
+                Weaken: []
             };
             // Remove self from managing
-            seen.delete("home");
+            for (const block of wdConfig.blockList)
+                seen.delete(block);
+
             let x = 0;
             // Go through bot net nodes
             for (const server of seen) {
@@ -53,7 +55,7 @@ export async function main(ns: NS) {
                 // default script
                 let script = `${wdConfig["defaultScript"]}.js`;
 
-                let serverType=wdConfig["defaultScript"];
+                let serverType = wdConfig["defaultScript"];
                 // determine current script
                 for (let i = 0; i < wdConfig["scripts"].length; i++) {
                     if (x % wdConfig["ratios"][i] == 0) {
@@ -97,9 +99,9 @@ export async function main(ns: NS) {
             }
 
             ns.print("\nworkers:");
-			ns.print(`\thack(${fleet.Hack.length}): ${fleet.Hack}`);
-			ns.print(`\tgrow(${fleet.Grow.length}): ${fleet.Grow}`);
-			ns.print(`\tweaken(${fleet.Weaken.length}): ${fleet.Weaken}`);
+            ns.print(`\thack(${fleet.Hack.length}): ${fleet.Hack}`);
+            ns.print(`\tgrow(${fleet.Grow.length}): ${fleet.Grow}`);
+            ns.print(`\tweaken(${fleet.Weaken.length}): ${fleet.Weaken}`);
 
             // Don't loop on forced update
             if (update) return;

@@ -23,7 +23,8 @@ type FleetWatchdogConfig = {
     defaultScript: string,
     scripts: string[],
     ratios: number[],
-    dependencies: string[]
+    dependencies: string[],
+    blockList: string[]
 }
 
 type HackNetConfig = {

@@ -25,12 +25,13 @@ export async function main(ns: NS){
             minMoneyPercentage: 0.6,
             maxMoneyPercentage: 1,
             personalPrefixes: ["home"],
-            unhackable: ["johnson-ortho", "crush-fitness"],
+            unhackable: ["n00dles","johnson-ortho", "crush-fitness","foodnstuff"],
             sleepTime: 1000
         },
         fleetWatchdog: {
             defaultScript: "Weaken",
             scripts: ["Weaken", "Grow", "Hack"],
+            blockList: ["home","n00dles", "foodnstuff","home-0"],
             ratios: [1, 2, 5],
             dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
         },
