@@ -87,6 +87,8 @@ function categorize(ns: NS, cur: string, targets: Targets, config: FleetControll
 		const curSecurity = ns.getServerSecurityLevel(cur);
 		const curMoney = ns.getServerMoneyAvailable(cur);
 
+		ns.print(`${cur}::${minMoney}/${curMoney}/${maxMoney}::${minSecurity}/${curSecurity}/${maxSecurity}`);
+
 		if (maxMoney > 0) {
 			if (curMoney > minMoney && curSecurity < maxSecurity) {
 				targets.Hack.push(cur);

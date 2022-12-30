@@ -10,7 +10,7 @@ export async function main(ns: NS) {
     const gang = ns.gang;
     const equiptment = gang.getEquipmentNames().filter(equiptment => {
         ns.print(`${equiptment}:${gang.getEquipmentType(equiptment)}`);
-        return gang.getEquipmentType(equiptment) === "Rootkit";
+        return gang.getEquipmentType(equiptment) === "Rootkit" || gang.getEquipmentType(equiptment) === "Augmentation";
     });
 
     ns.print(`[${equiptment}] equiptment for hackers`);

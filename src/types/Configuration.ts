@@ -41,11 +41,21 @@ type GangConfig = {
     upgradeMulti: number
 }
 
+type HWGWConfig={
+    port: number,
+    sleepTime: number,
+    personalPrefixes: string,
+    dryRun:boolean,
+    blockList: string[],
+    scriptDelay: number
+}
+
 type Configuration = {
     global: GlobalConfig,
     driver: DriverConfig,
     fleetController: FleetControllerConfig,
     fleetWatchdog: FleetWatchdogConfig,
     hackNet: HackNetConfig,
-    gangs: GangConfig
+    gangs: GangConfig,
+    hwgw: HWGWConfig
 }

@@ -3,7 +3,7 @@ import { NS } from "NetScriptDefinitions";
 const hackingFiles = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
 
 /** @param {NS} ns */
-export async function main(ns: NS){
+export async function main(ns: NS) {
 
     const executables = ns.ls("home");
     ns.print(executables);
@@ -17,21 +17,22 @@ export async function main(ns: NS){
             metricsStorage: 4
         },
         driver: {
-            portScripts: executables.filter(x=>hackingFiles.includes(x)).length
+            portScripts: executables.filter(x => hackingFiles.includes(x)).length
         },
         fleetController: {
-            minSecurityOffset: 1,
-            maxSecurityOffset: 4,
+            minSecurityOffset: 0,
+            maxSecurityOffset: 1,
             minMoneyPercentage: 0.6,
             maxMoneyPercentage: 1,
             personalPrefixes: ["home"],
-            unhackable: ["n00dles","johnson-ortho", "crush-fitness","foodnstuff"],
+            unhackable: ["n00dles"],
             sleepTime: 1000
         },
         fleetWatchdog: {
             defaultScript: "Weaken",
-            scripts: ["Weaken", "Grow", "Hack"],
-            blockList: ["home","n00dles", "foodnstuff","home-0"],
+            // scripts: ["Weaken", "Grow", "Hack"],
+            scripts:["Weaken", "Weaken", "Weaken"],
+            blockList: ["home","n00dles"],
             ratios: [1, 2, 5],
             dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
         },
@@ -43,8 +44,17 @@ export async function main(ns: NS){
             sleepTime: 100
         },
         gangs: {
-            tasks:["Money Laundering", "Money Laundering", "Cyberterrorism"],
-            upgradeMulti: 2
+            tasks: ["Money Laundering"],
+            // tasks: ["Ethical Hacking"],
+            upgradeMulti: 1.5
+        },
+        hwgw: {
+            personalPrefixes: "home",
+            blockList: ["home"],
+            sleepTime: 1000,
+            port: 5,
+            dryRun: false,
+            scriptDelay: 500
         }
     } as Configuration));
 

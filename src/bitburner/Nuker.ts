@@ -9,7 +9,7 @@ export async function main(ns: NS) {
 		const level = ns.getHackingLevel();
 
 		x++;
-		if (x > 30) {
+		if (x > 20) {
 			ns.exec("ConfigUpdater.js", "home");
 			x = 0;
 		}
