@@ -1,7 +1,7 @@
 import { NS } from "NetScriptDefinitions";
 import { BatchCalculator } from "cycles/batchCalculator";
 import { Discovery } from "cycles/discovery";
-import { ValuedTargets, WorkerPool, WorkerTargetAssignment } from "./models";
+import { Allocations, ValuedTargets, WorkerPool, WorkerTargetAssignment } from "./models";
 
 function scriptRam(ns: NS) {
     const ram = Math.ceil(ns.getScriptRam("h.js"));
@@ -16,6 +16,7 @@ function maxRam(ns: NS, worker: string) {
 export async function main(ns: NS) {
     ns.disableLog("ALL");
     ns.enableLog("exec");
+    ns.enableLog("scp");
     const discover = new Discovery(ns);
 
 
@@ -33,16 +34,16 @@ export async function main(ns: NS) {
         const workerPoolCapacity = determineServerPoolCapacity(ns, workers);
         const workerThreadsAllocated = initializeWorkersAllocated(ns, workers);
         const valuableTargets = valueTargets(ns, targets);
-        const workerTargetAssignment = assignWorkers(ns, workerPoolCapacity, workerThreadsAllocated, valuableTargets, hwgw);
-        initWorkers(ns, workerTargetAssignment);
+        const workerTargetAssignments = assignWorkers(ns, workerPoolCapacity, workerThreadsAllocated, valuableTargets, hwgw);
+        initWorkers(ns, workerPoolCapacity);
 
         ns.print(`Valued Target:\n\t${JSON.stringify(valuableTargets)}`);
         ns.print(`Capcity:\n\t${JSON.stringify(workerPoolCapacity)}`);
         ns.print(`Allocation:\n\t${JSON.stringify(workerThreadsAllocated)}`);
-        ns.print(`Assignments:\n\t${JSON.stringify(workerTargetAssignment)}`);
+        ns.print(`Assignments:\n\t${JSON.stringify(workerTargetAssignments)}`);
 
         ns.clearPort(hwgw.port);
-        ns.writePort(hwgw.port, JSON.stringify(workerTargetAssignment));
+        ns.writePort(hwgw.port, JSON.stringify({ valuableTargets, workerPoolCapacity, workerThreadsAllocated, workerTargetAssignments } as Allocations));
 
         //safty sleep
         await ns.sleep(global["sleepTime"]);
@@ -64,8 +65,8 @@ function determineServerPoolCapacity(ns: NS, workers: string[]): WorkerPool[] {
     }).sort((a, b) => b.threads - a.threads);
 }
 
-function initializeWorkersAllocated(ns: NS, workers: string[]) {
-    const workerAllocations = {};
+function initializeWorkersAllocated(ns: NS, workers: string[]): Map<string, number> {
+    const workerAllocations = new Map<string, number>;
     workers.forEach(worker => {
         workerAllocations[worker] = 0;
     });
@@ -104,13 +105,13 @@ function assignWorkers(ns: NS, workerPool: WorkerPool[], threadAllocations: obje
 function valueTargets(ns: NS, targets: string[]): ValuedTargets[] {
     return targets.map((target) => {
         return { maxMoney: ns.getServerMaxMoney(target), target: target };
-    }).sort((a, b) => b.maxMoney - a.maxMoney);
+    })
+        .filter(element => element.maxMoney > 0)
+        .sort((a, b) => b.maxMoney - a.maxMoney);
 }
 
-function initWorkers(ns: NS, workers: WorkerTargetAssignment[]) {
+function initWorkers(ns: NS, workers: WorkerPool[]) {
     for (const { worker } of workers) {
-        if (worker != "home") {
-            ns.scp(["w.js", "h.js", "g.js"], worker);
-        }
+        ns.scp(["w.js", "h.js", "g.js"], worker);
     }
 }

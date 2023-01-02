@@ -47,7 +47,8 @@ type HWGWConfig={
     personalPrefixes: string,
     dryRun:boolean,
     blockList: string[],
-    scriptDelay: number
+    scriptDelay: number,
+    moneyPercentage: number
 }
 
 type Configuration = {

@@ -4,14 +4,19 @@ import { BatchProperties, BatchTiming } from "./models";
 export class BatchCalculator {
     ns: NS;
     scriptDelay: number
+    moneyPercentage: number
+
     constructor(ns: NS, hwgw: HWGWConfig) {
         this.ns = ns;
         this.scriptDelay = hwgw.scriptDelay;
+        this.moneyPercentage = hwgw.moneyPercentage;
     }
 
-    getBatchProperties(target): BatchProperties {
-        const money = this.ns.getServerMaxMoney(target);
-        if (money <= 0) return null;
+    getBatchProperties(target:string): BatchProperties {
+        const maxMoney = this.ns.getServerMaxMoney(target);
+        if(maxMoney <= 0) return null;
+
+        const money = Math.max(maxMoney*this.moneyPercentage,1);
 
         const hackThreads = Math.max(Math.ceil(this.ns.hackAnalyzeThreads(target, money)), 1),
             hackTime = Math.ceil(this.ns.getHackTime(target)),
@@ -47,12 +52,12 @@ export class BatchCalculator {
 
         const hackPadding = properties.weakenTime - properties.hackTime;
         const growPadding = properties.weakenTime - properties.growTime;
-        const delay = hackPadding + this.scriptDelay;
+        const delay = this.scriptDelay;
 
-        const hackSleep = 0;
-        const hackSecSleep = delay - hackPadding;
-        const growSleep = (delay * 2) - (growPadding - hackPadding);
-        const growSecSleep = (delay * 3) - hackPadding;
+        const hackSleep = hackPadding-delay;
+        const hackSecSleep = 0;
+        const growSleep = growPadding+delay;
+        const growSecSleep = delay*2;
 
         const results = {
             hackSleep,
@@ -62,12 +67,16 @@ export class BatchCalculator {
             batchLength: growSecSleep + properties.weakenTime
         };
 
-        this.ns.print("----------------------------------------");
-        this.ns.print(JSON.stringify(properties));
-        this.ns.print(JSON.stringify(results));
-        this.ns.print(hackPadding);
-        this.ns.print(growPadding);
-        this.ns.print("----------------------------------------");
+        // this.ns.print("----------------------------------------");
+        // this.ns.print(JSON.stringify(properties));
+        // this.ns.print(JSON.stringify(results));
+        // this.ns.print(hackPadding);
+        // this.ns.print(growPadding);
+        // this.ns.print(`Hack: Start: 0, Sleep For: ${hackSleep}, Run for: ${properties.hackTime}, End at: ${hackSleep+properties.hackTime}`);
+        // this.ns.print(`HackWeak: Start: 0, Sleep For: ${hackSecSleep}, Run for: ${properties.weakenTime}, End at: ${hackSecSleep+properties.weakenTime}`);
+        // this.ns.print(`Grow: Start: 0, Sleep For: ${growSleep}, Run for: ${properties.growTime}, End at: ${growSleep+properties.growTime}`);
+        // this.ns.print(`GrowWeak: Start: 0, Sleep For: ${growSecSleep}, Run for: ${properties.weakenTime}, End at: ${growSecSleep+properties.weakenTime}`);
+        // this.ns.print("----------------------------------------");
         return results;
     }
 }

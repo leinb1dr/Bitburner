@@ -16,7 +16,7 @@ export interface WorkerTargetAssignment {
 
 export type BatchProperties = {
     money: number,
-    target: number,
+    target: string,
     hackThreads: number,
     hackTime: number,
     hackSecurityOffsetThreads: number,
@@ -35,4 +35,11 @@ export type BatchTiming = {
     growSleep: number,
     growSecSleep: number,
     batchLength: number
+}
+
+export type Allocations = {
+    valuableTargets: ValuedTargets[]
+    workerPoolCapacity: WorkerPool[],
+    workerThreadsAllocated: Map<string, number>,
+    workerTargetAssignments:WorkerTargetAssignment[]
 }
