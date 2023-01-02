@@ -21,7 +21,7 @@ export async function main(ns: NS) {
         ns.purchaseServer("home", 2);
     }
 
-    for (let i = 2; 1 <= 20; i++) {
+    for (let i = 2; 1 <= 5; i++) {
         const ramUpgrade = Math.pow(2, i);
         for (let j = 0; j < ns.getPurchasedServers().length; j++) {
             if (ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
