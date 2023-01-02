@@ -20,8 +20,8 @@ export async function main(ns: NS) {
             portScripts: executables.filter(x => hackingFiles.includes(x)).length
         },
         fleetController: {
-            minSecurityOffset: 0,
-            maxSecurityOffset: 1,
+            minSecurityOffset: 1,
+            maxSecurityOffset: 3,
             minMoneyPercentage: 0.6,
             maxMoneyPercentage: 1,
             personalPrefixes: ["home"],
@@ -31,9 +31,9 @@ export async function main(ns: NS) {
         fleetWatchdog: {
             defaultScript: "Weaken",
             // scripts: ["Weaken", "Grow", "Hack"],
-            scripts:["Weaken", "Weaken", "Weaken"],
+            scripts:["Weaken", "Grow", "Hack"],
             blockList: ["home","n00dles"],
-            ratios: [1, 2, 5],
+            ratios: [1, 2, 3],
             dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
         },
         hackNet: {
@@ -44,8 +44,9 @@ export async function main(ns: NS) {
             sleepTime: 100
         },
         gangs: {
-            tasks: ["Money Laundering"],
-            // tasks: ["Ethical Hacking"],
+            // tasks: ["Money Laundering"],
+            tasks: ["Ethical Hacking","Ethical Hacking","Money Laundering","Train Hacking","Train Hacking","Train Hacking","Train Hacking"],
+            // tasks:["Train Hacking"],
             upgradeMulti: 1.5
         },
         hwgw: {
@@ -54,7 +55,8 @@ export async function main(ns: NS) {
             sleepTime: 1000,
             port: 5,
             dryRun: false,
-            scriptDelay: 500
+            scriptDelay: 500,
+            moneyPercentage: 0.00001
         }
     } as Configuration));
 
