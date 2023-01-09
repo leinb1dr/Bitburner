@@ -42,7 +42,7 @@ export async function main(ns: NS) {
 
                 workerPoolCapacity.sort((a, b) => (b.threads - workerThreadsAllocated[b.worker] - schedulerAllocations[b.worker]) - (a.threads - workerThreadsAllocated[a.worker] - schedulerAllocations[a.worker]));
                 ns.print(JSON.stringify(workerPoolCapacity));
-                const batchProperties = batchCalculator.getBatchProperties(valuedTarget.target);
+                const batchProperties = batchCalculator.getBatchProperties(valuedTarget.target, hwgw.allowBatching);
                 const fix = levelSetTarget(ns, valuedTarget.target, hwgw);
 
                 if (fix.fixSecurity) {
@@ -142,5 +142,5 @@ function correctMoney(ns: NS, target: string, hwgw: HWGWConfig) {
 function levelSetTarget(ns: NS, target: string, hwgw: HWGWConfig) {
     const fixSec = correctSecurity(ns, target);
     const fixMoney = correctMoney(ns, target, hwgw);
-    return { fixHack: fixSec != 0 || fixMoney >= 0, fixMoney: fixMoney >= 0, money: fixMoney, fixSecurity: fixSec != 0, security: fixSec };
+    return { fixHack: fixSec > 0 || fixMoney > 0, fixMoney: fixMoney > 0, money: fixMoney, fixSecurity: fixSec > 0, security: fixSec };
 }

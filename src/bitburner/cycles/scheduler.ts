@@ -94,5 +94,5 @@ function correctMoney(ns: NS, target: string, hwgw: HWGWConfig) {
 function levelSetTarget(ns: NS, target: string, hwgw: HWGWConfig) {
     const fixSec = correctSecurity(ns, target);
     const fixMoney = correctMoney(ns, target, hwgw);
-    return { fixHack: fixSec != 0 || fixMoney >= 0, fixMoney: fixMoney >= 0, money: fixMoney, fixSecurity: fixSec != 0, security: fixSec };
+    return { fixHack: fixSec > 0 || fixMoney > 0, fixMoney: fixMoney > 0, money: fixMoney, fixSecurity: fixSec > 0, security: fixSec };
 }

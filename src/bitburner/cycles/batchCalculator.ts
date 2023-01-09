@@ -12,7 +12,7 @@ export class BatchCalculator {
         this.moneyPercentage = hwgw.moneyPercentage;
     }
 
-    getBatchProperties(target:string): BatchProperties {
+    getBatchProperties(target:string, allowBatching:boolean): BatchProperties {
         const maxMoney = this.ns.getServerMaxMoney(target);
         if(maxMoney <= 0) return null;
 
@@ -28,9 +28,12 @@ export class BatchCalculator {
 
         const batchTiming = this.batchSleepTimes({ weakenTime, hackTime, growTime });
 
-        const batches = 1;
+        let batches = 1;
+        if(allowBatching){
+            batches = Math.floor(batchTiming.batchLength/this.scriptDelay);
+        }
 
-        const neededThreads = (hackThreads + hackSecurityOffsetThreads + growThreads + growSecurityOffsetThreads) * batches;
+        const neededThreads = (hackThreads + hackSecurityOffsetThreads + growThreads + growSecurityOffsetThreads)*batches;
 
         return {
             money,

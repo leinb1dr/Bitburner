@@ -35,7 +35,7 @@ export async function main(ns: NS) {
 
 
             const ascention = gang.getAscensionResult(member.name);
-            if (ascention && ascention.hack >= gangConfig.upgradeMulti) {
+            if (ascention && ((ascention.hack >= gangConfig.upgradeMulti) || (ascention.cha >= gangConfig.upgradeMulti))) {
                 if (gang.ascendMember(member.name)) {
                     ns.print(`${member.name} ascended`);
                 }

@@ -15,8 +15,8 @@ function maxRam(ns: NS, worker: string) {
 /** @param {NS} ns */
 export async function main(ns: NS) {
     ns.disableLog("ALL");
-    ns.enableLog("exec");
-    ns.enableLog("scp");
+    // ns.enableLog("exec");
+    // ns.enableLog("scp");
     const discover = new Discovery(ns);
 
 
@@ -79,7 +79,7 @@ function assignWorkers(ns: NS, workerPool: WorkerPool[], threadAllocations: obje
 
     for (const { target } of targets) {
         ns.print(`assigning ${target} to worker`);
-        const batchProperties = batchCalculator.getBatchProperties(target);
+        const batchProperties = batchCalculator.getBatchProperties(target, hwgw.allowBatching);
 
         if (batchProperties) {
             const availableWorker = workerPool.find(worker => batchProperties.neededThreads <= worker.threads - threadAllocations[worker.worker]);

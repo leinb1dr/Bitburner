@@ -29,7 +29,7 @@ type FleetWatchdogConfig = {
 
 type HackNetConfig = {
     ramUpgrade: number,
-    levelUpgrade: number,
+    levelToUpgrade: number,
     cpuUpgrade: number,
     fleetSize: number,
     sleepTime: number
@@ -48,10 +48,18 @@ type HWGWConfig={
     dryRun:boolean,
     blockList: string[],
     scriptDelay: number,
-    moneyPercentage: number
+    moneyPercentage: number,
+    allowBatching: boolean
+}
+
+type PurchaseServerConfig={
+    poolSize: number,
+    ramExponent: number,
+    sleepTime: number,
 }
 
 type Configuration = {
+    purchaseServer: PurchaseServerConfig,
     global: GlobalConfig,
     driver: DriverConfig,
     fleetController: FleetControllerConfig,

@@ -7,6 +7,6 @@
     "javascript.preferences.importModuleSpecifier": "non-relative",
     "files.exclude": {
         "tsconfig.json": false,
-        "src/types/NetScriptDefinitions.d.ts": true,
+        // "src/types/NetScriptDefinitions.d.ts": true,
     }
 }

@@ -27,6 +27,7 @@ export async function main(ns: NS) {
     const config = JSON.parse(target) as Configuration;
     const hackNetConfig = config.hackNet;
     const globalConfig = config.global;
+    
     let fullyUpgradedRam = false, fullyUpgradedLevel = false, fullyUpgradedCPU = false, fullyPurchaseFleet = false;
     while (!fullyPurchaseFleet || !fullyUpgradedRam || !fullyUpgradedLevel || !fullyUpgradedCPU) {
         fullyUpgradedRam = true, fullyUpgradedLevel = true, fullyUpgradedCPU = true, fullyPurchaseFleet = true;
@@ -35,8 +36,8 @@ export async function main(ns: NS) {
 
             if (hacknet.getNodeStats(i).level < 200) fullyUpgradedLevel = false;
 
-            if (hacknet.getNodeStats(i).level < 200 && myMoney(ns) > hacknet.getLevelUpgradeCost(i, hackNetConfig.levelUpgrade)) {
-                hacknet.upgradeLevel(i, hackNetConfig.levelUpgrade);
+            if (hacknet.getNodeStats(i).level < 200 && myMoney(ns) > hacknet.getLevelUpgradeCost(i, hackNetConfig.levelToUpgrade)) {
+                hacknet.upgradeLevel(i, hackNetConfig.levelToUpgrade);
             }
         }
 

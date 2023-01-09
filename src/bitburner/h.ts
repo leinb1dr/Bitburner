@@ -11,7 +11,11 @@ export async function main(ns: NS) {
 
 	while (true) {
 		const nextBatch = (startTime + sleepTime) - Date.now();
-		await ns.sleep(nextBatch);
+		// if(nextBatch<0){
+		// 	// ns.toast(`${name} got out of sync`);
+		// 	ns.killall(ns.getHostname());
+		// }
+		if(nextBatch>0) await ns.sleep(nextBatch);
 		await ns.hack(name);
 		ns.print(`finished batch ${x++}`);
 		startTime += batchLength;

@@ -39,13 +39,25 @@ export async function main(ns: NS) {
         hackNet: {
             cpuUpgrade: 1,
             ramUpgrade: 1,
-            levelUpgrade: 2,
-            fleetSize: 30,
+            levelToUpgrade: 2,
+            fleetSize: 10,
             sleepTime: 100
         },
         gangs: {
             // tasks: ["Money Laundering"],
-            tasks: ["Ethical Hacking","Ethical Hacking","Money Laundering","Train Hacking","Train Hacking","Train Hacking","Train Hacking"],
+            tasks: [
+                //0
+                "Money Laundering","Money Laundering",
+                //2
+                "Money Laundering","Money Laundering",
+                //4
+                "Money Laundering","Cyberterrorism",
+                //6
+                "Money Laundering","Money Laundering",
+                //8
+                "Cyberterrorism","Cyberterrorism",
+                //10
+                "Money Laundering","Cyberterrorism"],
             // tasks:["Train Hacking"],
             upgradeMulti: 1.5
         },
@@ -55,8 +67,13 @@ export async function main(ns: NS) {
             sleepTime: 1000,
             port: 5,
             dryRun: false,
-            scriptDelay: 500,
-            moneyPercentage: 0.00001
+            scriptDelay: 1000,
+            moneyPercentage: 1,
+            allowBatching: false
+        },
+        purchaseServer:{
+            poolSize: 10,
+            ramExponent: 8
         }
     } as Configuration));
 

@@ -1,5 +1,5 @@
 import { NS } from "NetScriptDefinitions";
-import { WorkerTargetAssignment } from "cycles/models";
+import { Allocations } from "cycles/models";
 
 type ScriptIds = {
     hack: number,
@@ -13,71 +13,59 @@ type ScriptIds = {
 export async function main(ns: NS) {
     ns.disableLog("ALL");
     // ns.enableLog("exec");
-    let hackLevel = ns.getHackingLevel();
+    const pids: Map<string, ScriptIds> = new Map<string, ScriptIds>();
 
     while (true) {
-        const { hwgw, global, workerTargetAssignment } = await getPortData(ns);
+        const { hwgw, global, allocations: { workerTargetAssignments } } = await getPortData(ns);
 
-        const pids: Map<string, ScriptIds> = new Map<string, ScriptIds>();
-        for (const { target } of workerTargetAssignment) {
-            pids[target] = {
-                active: 0,
-                fixHack: false
-            };
+        for (const { target } of workerTargetAssignments) {
+            if (!pids[target]) {
+                pids[target] = {
+                    active: 0,
+                    fixHack: false
+                };
+            }
         }
 
-        // ns.print(`Assignments:\n\t${JSON.stringify(workerTargetAssignment)}`);
-        // let run = 1;
-        while (workerTargetAssignment.length > 0 && !hwgw.dryRun && hackLevel + 100 >= ns.getHackingLevel()) {
 
-            for (const { target, worker, batchProperties } of workerTargetAssignment) {
-               
-                if (!ns.isRunning(pids[target].active)) {
-                    // ns.print(`Starting run for ${target} on server ${worker}`);
-                    const needsFixing = levelSetTarget(ns, target);
+        for (const { target, worker, batchProperties } of workerTargetAssignments) {
 
-                    const { hackThreads, hackSecurityOffsetThreads, growThreads, growSecurityOffsetThreads, batchTiming } = batchProperties;
-                    const { hackSleep, hackSecSleep, growSecSleep, growSleep, batchLength } = batchTiming;
+            if (!ns.isRunning(pids[target].active)) {
+                // ns.print(`Starting run for ${target} on server ${worker}`);
+                const needsFixing = levelSetTarget(ns, target);
 
-                    let now = Date.now() + 500;
-                    for (let i = 0; i < 1; i++) {
+                const { hackThreads, hackSecurityOffsetThreads, growThreads, growSecurityOffsetThreads, batchTiming, batches } = batchProperties;
+                const { hackSleep, hackSecSleep, growSecSleep, growSleep, batchLength } = batchTiming;
 
-                        const batchMode = !needsFixing.fixHack;
-                        if (!needsFixing.fixHack) {
-                            pids[target].active = ns.exec("h.js", worker, hackThreads, target, now, hackSleep, batchMode, batchLength);
-                        }
+                let now = Date.now() + 500;
 
-                        pids[target].hackWeaken = ns.exec("w.js", worker, (needsFixing.fixHack) ? Math.max(Math.ceil(needsFixing.security / 0.05), 1) : hackSecurityOffsetThreads, target, now, hackSecSleep, batchMode, batchLength);
+                for (let i = 0; i < batches; i++) {
 
-                        if (!needsFixing.fixHack || needsFixing.fixMoney) {
-                            pids[target].active = ns.exec("g.js", worker, growThreads, target, now, growSleep, batchMode, batchLength);
-                        }
+                    const batchMode = !needsFixing.fixHack;
+                    if (!needsFixing.fixHack) {
+                        pids[target].active = ns.exec("h.js", worker, hackThreads, target, now, hackSleep, batchMode, batchLength);
+                    }
+                    pids[target].hackWeaken = ns.exec("w.js", worker, hackSecurityOffsetThreads, target, now, hackSecSleep, batchMode, batchLength);
 
-                        pids[target].active = ns.exec("w.js", worker, growSecurityOffsetThreads, target, now, growSecSleep, batchMode, batchLength);
-                        pids[target].fixHack = needsFixing.fixHack;
+                    if (!needsFixing.fixHack || needsFixing.fixMoney) {
+                        pids[target].active = ns.exec("g.js", worker, growThreads, target, now, growSleep, batchMode, batchLength);
+                    }
 
-                        // ns.print(`Starting run for ${target} on server ${worker} with pid ${pids[target]}`);
-                        now += (hwgw.scriptDelay * 4);
-                        if (needsFixing.fixHack) {
-                            ns.print(`Need to fix ${target} [${JSON.stringify(needsFixing)}]`);
-                            break;
-                        }
+                    pids[target].active = ns.exec("w.js", worker, growSecurityOffsetThreads, target, now, growSecSleep, batchMode, batchLength);
+                    pids[target].fixHack = needsFixing.fixHack;
+
+                    // ns.print(`Starting run for ${target} on server ${worker} with pid ${pids[target]}`);
+                    now += (hwgw.scriptDelay * 4);
+                    if (needsFixing.fixHack) {
+                        ns.print(`Need to fix ${target} [${JSON.stringify(needsFixing)}]`);
+                        break;
                     }
                 }
             }
-
-            await ns.sleep(global["sleepTime"]);
-
         }
 
-        hackLevel = ns.getHackingLevel();
+        await ns.sleep(global["sleepTime"]);
 
-        while (Object.values(pids).map(pid => ns.isRunning(pid)).reduce((p, c) => p || c)) {
-            ns.print("Draining processes");
-            await ns.sleep(hwgw["sleepTime"] || global["sleepTime"]);
-        }
-        //safty sleep
-        await ns.sleep(100);
     }
 }
 
@@ -97,11 +85,11 @@ async function getPortData(ns: NS) {
         assignmentPortValue = ns.peek(hwgw.port) as string;
     }
 
-    const workerTargetAssignment = JSON.parse(assignmentPortValue) as WorkerTargetAssignment[];
+    const allocations = JSON.parse(assignmentPortValue) as Allocations;
     return {
         hwgw,
         global,
-        workerTargetAssignment
+        allocations
     };
 }
 
