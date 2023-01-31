@@ -31,33 +31,35 @@ export async function main(ns: NS) {
         fleetWatchdog: {
             defaultScript: "Weaken",
             // scripts: ["Weaken", "Grow", "Hack"],
-            scripts:["Weaken", "Grow", "Hack"],
-            blockList: ["home","n00dles"],
+            scripts: ["Weaken", "Grow", "Hack"],
+            blockList: ["home", "n00dles"],
             ratios: [1, 2, 3],
             dependencies: ["MetricsPublisher.js", "AttackFunctions.js"]
         },
         hackNet: {
-            cpuUpgrade: 1,
-            ramUpgrade: 1,
-            levelToUpgrade: 2,
+            cpuUpgrade: 2,
+            ramUpgrade: 2,
+            levelToUpgrade: 4,
             fleetSize: 10,
             sleepTime: 100
         },
         gangs: {
-            // tasks: ["Money Laundering"],
-            tasks: [
-                //0
-                "Money Laundering","Money Laundering",
-                //2
-                "Money Laundering","Money Laundering",
-                //4
-                "Money Laundering","Cyberterrorism",
-                //6
-                "Money Laundering","Money Laundering",
-                //8
-                "Cyberterrorism","Cyberterrorism",
-                //10
-                "Money Laundering","Cyberterrorism"],
+            tasks: ["Cyberterrorism","Money Laundering","Money Laundering"],
+            // tasks: [
+            //     //0
+            //     "Train Hacking", "Train Hacking",
+            //     //2
+            //     "Train Hacking", "Train Hacking",
+            //     //4
+            //     "Cyberterrorism", "Money Laundering",
+            //     //6
+            //     "Cyberterrorism", "Train Hacking",
+            //     //8
+            //     "Train Hacking", "Train Hacking",
+            //     //10
+            //     "Train Hacking", "Train Hacking",
+            //     //12
+            //     "Train Hacking", "Train Hacking"],
             // tasks:["Train Hacking"],
             upgradeMulti: 1.5
         },
@@ -67,13 +69,14 @@ export async function main(ns: NS) {
             sleepTime: 1000,
             port: 5,
             dryRun: false,
-            scriptDelay: 1000,
+            scriptDelay: 1500,
             moneyPercentage: 1,
-            allowBatching: false
+            allowBatching: true
         },
-        purchaseServer:{
+        purchaseServer: {
             poolSize: 10,
-            ramExponent: 8
+            ramExponent: 20
+            // ramExponent: 128
         }
     } as Configuration));
 

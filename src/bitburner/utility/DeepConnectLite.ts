@@ -3,6 +3,7 @@ import { NS } from "NetScriptDefinitions";
 /** @param {NS} ns */
 export async function main(ns:NS) {
 	ns.disableLog("ALL");
+	ns.tail();
 	find(ns, [], "", "home", ns.args[0] as string, 0);
 }
 

@@ -12,6 +12,10 @@ function maxRam(ns: NS, worker: string) {
     return ns.getServerMaxRam(worker);
 }
 
+function availableRam(ns: NS, worker: string) {
+    return (ns.getServerMaxRam(worker) - ns.getServerUsedRam(worker)) * ((worker === "home" ? 0.1 : 1));
+}
+
 /** @param {NS} ns */
 export async function main(ns: NS) {
     ns.disableLog("ALL");
@@ -32,7 +36,7 @@ export async function main(ns: NS) {
         const { targets, workers } = getServerPools(discover, hwgw);
 
         const workerPoolCapacity = determineServerPoolCapacity(ns, workers);
-        const workerThreadsAllocated = initializeWorkersAllocated(ns, workers);
+        const workerThreadsAllocated = initializeWorkersAllocated(ns, workerPoolCapacity);
         const valuableTargets = valueTargets(ns, targets);
         const workerTargetAssignments = assignWorkers(ns, workerPoolCapacity, workerThreadsAllocated, valuableTargets, hwgw);
         initWorkers(ns, workerPoolCapacity);
@@ -60,15 +64,17 @@ function getServerPools(discover: Discovery, hwgw: HWGWConfig) {
 }
 
 function determineServerPoolCapacity(ns: NS, workers: string[]): WorkerPool[] {
-    return workers.map((worker) => {
+    const workerPool = workers.map((worker) => {
         return { threads: maxRam(ns, worker) / scriptRam(ns), worker: worker };
-    }).sort((a, b) => b.threads - a.threads);
+    });
+    workerPool.push({ threads: Math.floor(availableRam(ns, "home") / scriptRam(ns)), worker: "home" });
+    return workerPool.sort((a, b) => b.threads - a.threads);
 }
 
-function initializeWorkersAllocated(ns: NS, workers: string[]): Map<string, number> {
+function initializeWorkersAllocated(ns: NS, workers: WorkerPool[]): Map<string, number> {
     const workerAllocations = new Map<string, number>;
     workers.forEach(worker => {
-        workerAllocations[worker] = 0;
+        workerAllocations[worker.worker] = 0;
     });
     return workerAllocations;
 }

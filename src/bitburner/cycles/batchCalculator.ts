@@ -57,7 +57,7 @@ export class BatchCalculator {
         const growPadding = properties.weakenTime - properties.growTime;
         const delay = this.scriptDelay;
 
-        const hackSleep = hackPadding-delay;
+        const hackSleep = delay-hackPadding;
         const hackSecSleep = 0;
         const growSleep = growPadding+delay;
         const growSecSleep = delay*2;

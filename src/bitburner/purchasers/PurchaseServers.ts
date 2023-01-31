@@ -44,11 +44,12 @@ export async function main(ns: NS) {
                 if (ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
                     const cost = ns.getPurchasedServerUpgradeCost(`home-${j}`, ramUpgrade);
                     ns.print(`Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
-                    await waitForMoney(ns, cost);
-                    const success = ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
-                    ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
-                    if (success) {
-                        ns.killall(`home-${j}`);
+                    if (myMoney(ns) >= cost) {
+                        const success = ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
+                        ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
+                        if (success) {
+                            ns.killall(`home-${j}`);
+                        }
                     }
                 }
             }

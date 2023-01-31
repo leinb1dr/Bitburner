@@ -30,9 +30,11 @@ export async function main(ns: NS) {
             const member = gang.getMemberInformation(element);
 
             const task = gangConfig.tasks[i % gangConfig.tasks.length];
-
-            gang.setMemberTask(member.name, task);
-
+            if (member.hack < 1000) {
+                gang.setMemberTask(member.name, "Train Hacking");
+            } else {
+                gang.setMemberTask(member.name, task);
+            }
 
             const ascention = gang.getAscensionResult(member.name);
             if (ascention && ((ascention.hack >= gangConfig.upgradeMulti) || (ascention.cha >= gangConfig.upgradeMulti))) {

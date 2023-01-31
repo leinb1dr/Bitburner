@@ -9,8 +9,9 @@ export async function main(ns: NS) {
     ns.run("purchasers/PurchaseServers.js");
     ns.run("purchasers/UpgradeGang.js");
     ns.run("cycles/allocator.js");
-    ns.run("cycles/scheduler.js");
     ns.run("cycles/auxScheduler.js");
+    ns.run("cycles/scheduler.js");
+    // ns.run("cycles/schedulerv2.js");
 
     // const totalRam = ns.getServerMaxRam("home")-ns.getServerUsedRam("home")+ns.getScriptRam("StartUp.js")-ns.getScriptRam("ConfigUpdater.js");
     // const hackRam = ns.getScriptRam("Hack.js");
