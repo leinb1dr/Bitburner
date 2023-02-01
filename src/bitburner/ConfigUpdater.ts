@@ -77,6 +77,9 @@ export async function main(ns: NS) {
             poolSize: 10,
             ramExponent: 20
             // ramExponent: 128
+        },
+        corp:{
+            minFunds: (1 * (Math.pow(10, 18)))
         }
     } as Configuration));
 

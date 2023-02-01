@@ -41,9 +41,21 @@ export async function main(ns: NS) {
         for (; i <= purchaseServerConfig.ramExponent; i++) {
             const ramUpgrade = Math.pow(2, i);
             for (let j = 0; j < ns.getPurchasedServers().length; j++) {
+                if (ns.getServerMaxRam("home") < ramUpgrade) {
+                    const cost = ns.singularity.getUpgradeHomeRamCost();
+                    ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
+                    if (myMoney(ns) >= cost) {
+                        const success = ns.singularity.upgradeHomeRam();
+                        ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
+                        if (success) {
+                            ns.killall(`home-${j}`);
+                        }
+                    }
+                }
+
                 if (ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
                     const cost = ns.getPurchasedServerUpgradeCost(`home-${j}`, ramUpgrade);
-                    ns.print(`Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
+                    ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
                     if (myMoney(ns) >= cost) {
                         const success = ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
                         ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);

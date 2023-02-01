@@ -58,6 +58,10 @@ type PurchaseServerConfig={
     sleepTime: number,
 }
 
+type CorporationConfig={
+    minFunds: number,
+}
+
 type Configuration = {
     purchaseServer: PurchaseServerConfig,
     global: GlobalConfig,
@@ -66,5 +70,6 @@ type Configuration = {
     fleetWatchdog: FleetWatchdogConfig,
     hackNet: HackNetConfig,
     gangs: GangConfig,
-    hwgw: HWGWConfig
+    hwgw: HWGWConfig,
+    corp: CorporationConfig
 }
