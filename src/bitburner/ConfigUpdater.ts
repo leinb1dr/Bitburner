@@ -1,12 +1,15 @@
 import { NS } from "NetScriptDefinitions";
+import { LoggerFactory } from "./utility/Logger";
 
 const hackingFiles = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
+    LoggerFactory.init(ns);
+    const logger = LoggerFactory.newLogger();
 
     const executables = ns.ls("home");
-    ns.print(executables);
+    logger.info(executables);
 
     ns.clearPort(2);
     ns.writePort(2, JSON.stringify({

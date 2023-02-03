@@ -11,6 +11,9 @@
       ]
     }
   },
+  "exclude": [
+    "backup/**"
+  ],
   "include": [
     "src/**/*",
     "src/bitburner/.ts"

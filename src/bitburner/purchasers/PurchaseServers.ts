@@ -1,73 +1,70 @@
 import { NS } from "NetScriptDefinitions";
+import { NetscriptBase } from "NetScriptBase";
 
-function myMoney(ns: NS) {
-    return ns.getServerMoneyAvailable("home");
-}
+export class ServerPurchaser extends NetscriptBase {
+    purchaseServerConfig: PurchaseServerConfig;
+    globalConfig: GlobalConfig;
 
-async function waitForMoney(ns: NS, cost: number) {
-    while (myMoney(ns) < cost)
-        await ns.sleep(1000);
-}
-
-async function getConfig(ns: NS) {
-    let target = ns.peek(2) as string;
-
-    while (target == "NULL PORT DATA" || target.length == 0) {
-        await ns.sleep(1000);
-        target = ns.peek(2) as string;
+    constructor(ns: NS) {
+        super(ns);
     }
 
-    return JSON.parse(target) as Configuration;
+    public async purchase() {
+        await this.init();
+        if (this.ns.getPurchasedServers().length < this.purchaseServerConfig.poolSize) {
+            const cost = this.ns.getPurchasedServerCost(2);
+            if (this.support.hasMoney(cost)) this.ns.purchaseServer("home", 2);
+        } else {
+            let i = 2;
+
+            for (; i <= this.purchaseServerConfig.ramExponent; i++) {
+                const ramUpgrade = Math.pow(2, i);
+                for (let j = 0; j < this.ns.getPurchasedServers().length; j++) {
+                    if (this.ns.getServerMaxRam("home") < ramUpgrade) {
+                        const cost = this.ns.singularity.getUpgradeHomeRamCost();
+                        //this.ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
+                        if (this.support.hasMoney(cost)) {
+                            const success = this.ns.singularity.upgradeHomeRam();
+                            //this.ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
+                        }
+                    }
+
+                    if (this.ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
+                        const cost = this.ns.getPurchasedServerUpgradeCost(`home-${j}`, ramUpgrade);
+                        //this.ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
+                        if (this.support.hasMoney(cost)) {
+                            const success = this.ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
+                            //this.ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
+                            if (success) {
+                                this.ns.killall(`home-${j}`);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    protected async init() {
+        const config = await this.support.getConfiguration();
+        this.purchaseServerConfig = config.purchaseServer;
+        this.globalConfig = config.global;
+
+    }
 }
+
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
     ns.disableLog("sleep");
     ns.disableLog("getServerMoneyAvailable");
     ns.disableLog("getServerMaxRam");
-
-    const { purchaseServer: purchaseServerConfig } = await getConfig(ns);
-
-    while (ns.getPurchasedServers().length < purchaseServerConfig.poolSize) {
-        const cost = ns.getPurchasedServerCost(2);
-        await waitForMoney(ns, cost);
-        ns.purchaseServer("home", 2);
-    }
-
-    let i = 2;
+    const purchase = new ServerPurchaser(ns);
     while (true) {
-        const { purchaseServer: purchaseServerConfig, global: globalConfig } = await getConfig(ns);
+        purchase.purchase();
 
-        for (; i <= purchaseServerConfig.ramExponent; i++) {
-            const ramUpgrade = Math.pow(2, i);
-            for (let j = 0; j < ns.getPurchasedServers().length; j++) {
-                if (ns.getServerMaxRam("home") < ramUpgrade) {
-                    const cost = ns.singularity.getUpgradeHomeRamCost();
-                    ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
-                    if (myMoney(ns) >= cost) {
-                        const success = ns.singularity.upgradeHomeRam();
-                        ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
-                        if (success) {
-                            ns.killall(`home-${j}`);
-                        }
-                    }
-                }
-
-                if (ns.getServerMaxRam(`home-${j}`) < ramUpgrade) {
-                    const cost = ns.getPurchasedServerUpgradeCost(`home-${j}`, ramUpgrade);
-                    ns.print(`${i}: Waiting to purchase ${ramUpgrade} ram for home-${j} costing ${(cost / 1_000_000).toFixed(2)}M`);
-                    if (myMoney(ns) >= cost) {
-                        const success = ns.upgradePurchasedServer(`home-${j}`, ramUpgrade);
-                        ns.print(`Purchasing ${ramUpgrade} ram for home-${j} was successful: ${success}`);
-                        if (success) {
-                            ns.killall(`home-${j}`);
-                        }
-                    }
-                }
-            }
-        }
-
-        await ns.sleep(purchaseServerConfig["sleepTime"] || globalConfig["sleepTime"]);
+        await ns.sleep(purchase.purchaseServerConfig["sleepTime"] || purchase.globalConfig["sleepTime"]);
 
     }
 

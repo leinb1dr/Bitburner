@@ -8,7 +8,7 @@ export async function main(ns: NS) {
     ns.run("purchasers/PurchaseHackNet.js", 1, 30);
     ns.run("purchasers/PurchaseServers.js");
     ns.run("purchasers/UpgradeGang.js");
-    ns.run("cycles/allocator.js");
+    ns.run("cycles/Allocator.js");
     ns.run("cycles/auxScheduler.js");
     ns.run("cycles/scheduler.js");
     // ns.run("cycles/schedulerv2.js");
